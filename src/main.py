@@ -4,10 +4,15 @@ import matplotlib.pyplot as plt
 import time
 
 if __name__ == '__main__':
-    num_ch = 11
-    fch = np.arange(-np.floor(num_ch/2), np.floor(num_ch/2)+1, 1) * 0.05
-    fch_NLI = np.concatenate((fch,fch+.01,fch-.01))
-    fch_NLI = sorted(fch_NLI)
+    num_ch = 95
+    if num_ch % 2 == 1:  # odd number of channels
+        fch = np.arange(-np.floor(num_ch/2), np.floor(num_ch/2)+1, 1) * 0.05
+        fch_NLI = [0]
+    else:
+        fch = (np.arange(0,num_ch)-(num_ch/2)+0.5)*0.05
+        fch_NLI = [-.5 * 0.05, .5 * 0.05]
+    # fch_NLI = np.concatenate((fch,fch+.01,fch-.01))
+    # fch_NLI = sorted(fch_NLI)
     rs = np.ones(num_ch) * 0.032
     roll_off = np.ones(num_ch) * 0.05
     model_param = {'min_FWM_inv': 30.0, 'n_grid': 500, 'n_grid_min': 4,
@@ -20,7 +25,7 @@ if __name__ == '__main__':
     t = time.time()
     nli = gn.GN_integral(beta2, Lspan, loss, gam, fch, rs, roll_off, power, num_ch,model_param)
     print('Elapsed: %s' % (time.time() - t))
-    f1_array = np.linspace(-.3, .3, 1e3)
+    f1_array = np.linspace(np.amin(fch), np.amax(fch), 1e3)
     Gtx = gn.raised_cosine_comb(f1_array, rs, roll_off, fch, power)
     Gtx = Gtx + 10**-6  # To avoid log10 issues.
     plt.figure(1)
