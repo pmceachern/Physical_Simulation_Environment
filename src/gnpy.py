@@ -152,17 +152,21 @@ def GN_integral(b2, Lspan, a_dB, gam, f_ch, rs, roll_off, power, Nch, model_para
         Gpart = np.zeros(f1_array.size)  # Pre-allocate partial result for inner integral
         f_ind = 0
         for f1 in f1_array:  # Loop over f1
-            f_lim = np.sqrt(np.power(alpha_lin, 2)/(4*np.power(np.pi, 4)*b2*b2)*(min_FWM_inv-1))/(f1-f)+f
-            f2_dense_up = np.maximum(f_lim, -f_lim)
-            f2_dense_low = np.minimum(f_lim, -f_lim)
-            if f2_dense_low == 0:
-                f2_dense_low = -min_step
-            if f2_dense_up == 0:
-                f2_dense_up = min_step
-            if f2_dense_low < -fmax:
-                f2_dense_low = -fmax
-            if f2_dense_up > fmax:
-                f2_dense_up = fmax
+            if f1 != f:
+                f_lim = np.sqrt(np.power(alpha_lin, 2)/(4*np.power(np.pi, 4)*b2*b2)*(min_FWM_inv-1))/(f1-f)+f
+                f2_dense_up = np.maximum(f_lim, -f_lim)
+                f2_dense_low = np.minimum(f_lim, -f_lim)
+                if f2_dense_low == 0:
+                    f2_dense_low = -min_step
+                if f2_dense_up == 0:
+                    f2_dense_up = min_step
+                if f2_dense_low < -fmax:
+                    f2_dense_low = -fmax
+                if f2_dense_up > fmax:
+                    f2_dense_up = fmax
+            else:
+                f2_dense_up = fmax;
+                f2_dense_low = -fmax;
             f2_dense_width = np.abs(f2_dense_up - f2_dense_low)
             n2_grid_dense = np.ceil(f2_dense_width / min_step)
             df2 = f2_dense_width / n2_grid_dense
