@@ -3,14 +3,9 @@ GNPy: a Python 3 implementation of the Gaussian Noise (GN) Model of nonlinear
 propagation, developed by the OptCom group, Department of Electronics and 
 Telecommunications, Politecnico di Torino, Italy
 """
-__author__ = "Mattia Cantono (mattia.cantono@polito.it)"
-__copyright__ = "Copyright 2017, Politecnico di Torino"
+
 __credits__ = ["Mattia Cantono", "Vittorio Curri", "Alessio Ferrari"]
-__license__ = "BSD 3-Clause License"
-__version__ = "alpha1"
-__maintainer__ = "Mattia Cantono"
-__email__ = "mattia.cantono@polito.it"
-__status__ = "Development"
+
 
 import numpy as np
 
