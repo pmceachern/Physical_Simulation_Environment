@@ -1,0 +1,124 @@
+// Contents of "tip-oopt-pse-amplifier"
+module tip-oopt-pse-amplifier {
+	
+	yang-version "1";
+    
+	namespace "http://telecominfraproject.com/yang/tip-oopt-pse-amplifier";
+    prefix "tip-amp";
+
+    // import the openconfig optical amplifier model
+    import openconfig-optical-amplifier { prefix oc-opt-amp; }
+    import openconfig-transport-types { prefix oc-opt-types; }
+
+    organization "Telecom Infra Project";
+
+    contact "www.telecominfraproject.com";
+
+    description
+    	"This model describes configuration and state data for optical amplifiers in a line system. It 
+    	 is rooted in the openconfig optical amplifier model with augmentation to assist with simulations.";
+    
+    revision 2017-05-19 {
+        description "Initial revision";
+    }
+    
+    // Copyright (c) Juniper Networks, Inc., 2017.
+    // All rights reserved.
+    
+    grouping tip-oopt-pse-amplifier-config {
+    	// the openconfig-optical-amplifier model contains the following configuration attributes:
+    	//
+    	//    name - User-defined name to identify the amplifier
+        //    type - the type of amplifier EDFA, FORWARD_RAMAN, BACKWARD_RAMAN, HYBRID
+        //    target-gain - target positive gain
+        //    target-gain-tilt - gain tilt control
+        //    gain-range - selected gain range: LOW_GAIN_RANGE, MED_GAIN_RANGE, HIGH_GAIN_RANGE, FIXED_GAIN_RANGE
+        //    amp-mode - operating mode CONSTANT_POWER, CONSTANT_GAIN
+    	//    target-output-power - target optical power
+    	//    enabled -  Turns power on/off
+    	
+    	// These are additional parameters required to support the GN algorithm
+    	leaf noise-figure {
+    		type decimal64 {
+    	        fraction-digits 2;
+    	      }
+    	      units dB;
+    	      description
+    	        "Noise figure introduced by the amplifier";
+    	}
+    	
+    	leaf distributed-amplification {
+    		type boolean;
+    		description 
+    			"When set to true, distributed amplification is utilized";
+    	}
+    	
+    	list gain-profile {
+    		// Only require gain-profile in cases of distributed amplification
+    		when "./distributed-amplification = true";
+    		key frequency;
+    		
+    		leaf frequency {
+        		type oc-opt-types:frequency-type ;
+        	    description
+        	        "Optical Channel frequency";
+        	}
+        	
+        	leaf gain {
+        		type decimal64 {
+        	        fraction-digits 2;
+        	      }
+        	      units dB;
+        	      description
+        	        "channel gain";
+        	}
+    	}
+    	
+    	leaf operating-mode-id {
+    		type string;
+    		description 
+    			"operating-mode-id is a string that identifies a mode that will pre-set the following attributes:
+    				- amplifier-type
+    			    - gain-range ( LOW-GAIN, HIGH-GAIN, etc. )
+    			    - amplifier-mode ( CONSTANT-GAIN, CONSTANT-POWER )";
+    	}
+    }
+    
+    grouping tip-oopt-pse-amplifier-state {
+    	// the openconfig-optical-amplifier model provides the following state information:
+    	//
+    	// actual-gain - instant, average, minimum, maximum
+        // actual-gain-tilt - instant, average, minimum, maximum 
+        // input-power-total - instant, average, minimum, maximum
+        // input-power-c-band - instant, average, minimum, maximum
+    	// input-power-l-band - instant, average, minimum, maximum
+    	// output-power-total - instant, average, minimum, maximum
+    	// output-power-c-band - instant, average, minimum, maximum
+    	// output-power-l-band - instant, average, minimum, maximum
+        // laser-bias-current - instant, average, minimum, maximum
+    	// optical-return-loss - instant, average, minimum, maximum
+    	
+    	// Further state information would be defined here.
+    	
+    }
+    
+    grouping tip-oopt-pse-amplifier-top {
+		container tip-oopt-pse-amp {
+    		
+    	    container config {
+    		    uses tip-oopt-pse-amplifier-config;
+    	    }
+    	
+    	    container tip-oopt-pse-amp-state {
+    	    	config false;
+    	    	uses tip-oopt-pse-amplifier-config;
+    		    uses tip-oopt-pse-amplifier-state;
+    	    }
+    	}
+    }
+    
+    augment "oc-opt-amp:optical-amplifier-top" {
+        uses tip-oopt-pse-amplifier-top;	
+    }
+    
+}
