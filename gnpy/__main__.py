@@ -2,8 +2,13 @@ import gnpy as gn
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import sys
 
-if __name__ == '__main__':
+def main(args=None):
+    """Required for setup.py install gui script."""
+    if args is None:
+        args = sys.argv[1:]
+
     num_ch = 95
     if num_ch % 2 == 1:  # odd number of channels
         fch = np.arange(-np.floor(num_ch/2), np.floor(num_ch/2)+1, 1) * 0.05
@@ -39,5 +44,5 @@ if __name__ == '__main__':
     plt.show()
 
 
-
-
+if __name__ == '__main__':
+    main()
